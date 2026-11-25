@@ -1,0 +1,78 @@
+{
+  "name": "veloframe",
+  "productName": "VeloFrame",
+  "description": "Ultra-fast, local-first 120fps presentation studio with built-in GitHub auto-updater",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist-electron/main.js",
+  "author": "halxo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halxo/veloframe.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:electron": "tsc -p tsconfig.electron.json && node -e \"require('fs').writeFileSync('dist-electron/package.json', JSON.stringify({ type: 'commonjs' }))\"",
+    "build:all": "npm run build && npm run build:electron",
+    "dist:win": "npm run build:all && npx electron-builder --win nsis --x64 --publish never",
+    "dist:win:portable": "npm run build:all && npx electron-builder --win portable --x64 --publish never",
+    "release:win": "npm run build:all && npx electron-builder --win nsis --x64 --publish always",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  },
+  "devDependencies": {
+    "electron": "^41.0.0",
+    "electron-builder": "^26.0.12",
+    "esbuild": "^0.28.2",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.6"
+  },
+  "build": {
+    "appId": "com.veloframe.studio",
+    "productName": "VeloFrame",
+    "copyright": "Copyright © 2026 VeloFrame",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "halxo",
+        "repo": "veloframe",
+        "releaseType": "release"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "signExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "VeloFrame",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}
